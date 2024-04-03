@@ -2,7 +2,7 @@
 
 This dataset contains a total of 3,000,000 Vietnamese sentences, divided into the following sets:
 
-- Training: 2500,000 sentences
+- Training: 2,500,000 sentences
 - Validation: 250,000 sentences
 - Test: 250,000 sentences
 
