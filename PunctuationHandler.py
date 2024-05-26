@@ -2,7 +2,7 @@ import re
 
 class PunctuationHandler():
     capital_only_mode = False
-    special_characters = "!@#$%^&*()-+?_=,<>'/\""
+    special_characters = "!@#$%^&*()-+?_=.,<>'/\""
     # current_input = []     input split by spaces. E.g. This is ("A sentence").       ->      ["This", "is", "(\"a", "sentence\")."]
     pre_punctuation = []   # List of special characters at the beginning of each word  ->      ['', '', '("', '']
     post_punctuation = []  # List of special characters at the end of each word        ->      ['', '', '', '").']
