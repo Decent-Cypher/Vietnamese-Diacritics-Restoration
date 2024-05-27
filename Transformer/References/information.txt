@@ -1,0 +1,2 @@
+max_len_input = 118
+unique tokens in training data (2500k): 97115
