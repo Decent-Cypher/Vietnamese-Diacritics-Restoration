@@ -6,7 +6,7 @@ from tqdm import tqdm
 from nltk import bigrams, trigrams
 from collections import Counter, defaultdict
 from nltk.lm.preprocessing import padded_everygram_pipeline
-from nltk.lm import MLE, Laplace, StupidBackoff, AbsoluteDiscountingInterpolated, KneserNeyInterpolated, WittenBellInterpolated
+from nltk.lm import MLE, Laplace, StupidBackoff, AbsoluteDiscountingInterpolated, KneserNeyInterpolated, WittenBellInterpolated, Vocabulary
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from utility import accuracy_score
 import csv
@@ -44,13 +44,20 @@ def preprocess_corpus(train_filename, min_frequency = 4):
                 sent[i] = "<UNK>"
     return corpus
 
-def save_model(train_filename, model, n = 3, model_filename = 'kneserney_ngram.pkl'):
+def preprocess_train(train_filename='Y_train_new.pkl', n=3, unk_cutoff=4):
+    Y_train = pickle.load(open(train_filename, "rb"))
+    corpus = [tokenize(sent) for sent in Y_train]
+    train_data, padded_sents = padded_everygram_pipeline(n, corpus)
+    vocab = Vocabulary(padded_sents, unk_cutoff=unk_cutoff)
+    return train_data, padded_sents, vocab
+
+def save_model(train_data, padded_sents, model, n = 3, model_filename = 'kneserney_ngram.pkl'):
     # Create a corpus of words from training set
-    corpus = preprocess_corpus(train_filename)
+    # corpus = preprocess_corpus(train_filename)
 
     # train_data (list[list[tuple]]): a list whose element is a list of all subsets of all padded trigrams in a sentence.
     # padded_sents (list): list of all tokens of all padded sentences
-    train_data, padded_sents = padded_everygram_pipeline(n, corpus)
+    # train_data, padded_sents = padded_everygram_pipeline(n, corpus)
     
     model.fit(train_data, padded_sents)
 
@@ -155,13 +162,16 @@ def beam_search(tokens, model, b=3, n=3):
     return candidates
 
 
-def predict(sentence: string):
-    p = PunctuationHandler()
-    print(p.remover(sentence))
-    model = pickle.load(open("kneserney_ngram.pkl", "rb"))
-    result = beam_search(p.remover(sentence), model)
-    print("After accents insertion: " + p.converter(result[0][0]))
-    return p.converter(result[0][0])
+def predict(texts: list[str]):
+    output = []
+    for sentence in texts:
+        p = PunctuationHandler()
+        print(p.remover(sentence))
+        model = pickle.load(open("kneserney_ngram.pkl", "rb"))
+        result = beam_search(p.remover(sentence), model)
+        print("After accents insertion: " + p.converter(result[0][0]))
+        output.append(p.converter(result[0][0]))
+    return output
 
 def predict_testset(model_filename = "kneserney_ngram.pkl", X_test_filename = 'testset_200\\test_X_200.pkl', Y_pred_csv = 'pred_Y_200.csv'):
     # detokenize = TreebankWordDetokenizer().detokenize
@@ -196,10 +206,12 @@ def print_report(Y_pred_csv = 'pred_Y_200.csv', Y_test_pkl = 'testset_200\\test_
     
 if __name__ == "__main__":
     n = 3
-    model = KneserNeyInterpolated(n)  # discount = 0.1
-    # model = Laplace(n)
-    # model = StupidBackoff(n) # alpha = 0.4
-    save_model(train_filename = "X_train_new.pkl", model = model, n = n, model_filename = 'kneserney_trigram.pkl')
+    train_data, padded_sents, vocab = preprocess_train()
+    model = KneserNeyInterpolated(order=n, vocabulary=vocab)  # discount = 0.1
+    model = Laplace(order=n, vocabulary=vocab)
+    model = StupidBackoff(order=n, vocabulary=vocab) # alpha = 0.4
+    save_model(train_data=train_data, padded_sents=padded_sents, model = model, n = n, model_filename = 'kneserney_trigram.pkl')
+
 
 
 
