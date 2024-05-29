@@ -3,8 +3,6 @@ from tqdm import tqdm
 import csv
 import numpy as np
 
-
-
 def accuracy_score(Y_true, Y_pred):
     """
     :param Y_true: A 2 dimensional numpy array of true labels.
