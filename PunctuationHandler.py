@@ -65,7 +65,7 @@ class PunctuationHandler():
                 idx += len(c[0])
             for j in range((len(sent_tokens))):
                 token = sent_tokens[j]
-                assert len(token) == len(self.token_position[i][j][0])
+                assert len(token) == len(self.token_position[i][j][0]) and idx == self.token_position[i][j][1]
                 sent += token
                 for c in self.capital[i]:
                     if c >= idx and c < idx + len(token):
