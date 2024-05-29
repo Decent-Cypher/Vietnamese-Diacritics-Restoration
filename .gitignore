@@ -1,3 +1,5 @@
-data_large/
 data_small/
+__pycache__
 env/
+.gitignore
+requirements.txt
