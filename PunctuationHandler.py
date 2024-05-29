@@ -2,7 +2,7 @@ import re
 
 class PunctuationHandler():
     capital_only_mode = False
-    special_characters = "!@#$%^&*()-+?_=.,<>'/\""
+    special_characters = "!@#$%^&*()-+?_=,.<>'/\""
     # current_input = []     input split by spaces. E.g. This is ("A sentence").       ->      ["This", "is", "(\"a", "sentence\")."]
     pre_punctuation = []   # List of special characters at the beginning of each word  ->      ['', '', '("', '']
     post_punctuation = []  # List of special characters at the end of each word        ->      ['', '', '', '").']
@@ -20,8 +20,8 @@ class PunctuationHandler():
             if re.search("[A-Za-z0-9]",current_word) == None:
                 self.punctuated_words[i] = current_word
                 current_input[i] = ''
-                # self.pre_punctuation.append('')
-                # self.post_punctuation.append('')
+                self.pre_punctuation.append('')
+                self.post_punctuation.append('')
                 continue
             
             # Handling pre-punctuation
@@ -61,18 +61,18 @@ class PunctuationHandler():
             current_input.remove('')
             
         if not self.capital_only_mode:
-            output = ' '.join(current_input)
-            return output
+            return current_input
         else:
-            return input.lower()
+            return input.lower().split()
             
     def converter(self, input):
+        input = ' '.join(input)
         input = ''.join(e for e in input if e.isalnum() or e == ' ')
         current_input = input.split()
-        for i in range(len(current_input)):
-            if i in self.punctuated_words:
-                current_input[i-1] += ' ' + self.punctuated_words[i]
-            
+        for i in self.punctuated_words:
+            current_input.insert(i, self.punctuated_words[i])
+        
+        for i in range(len(current_input)):        
             # Return capitalization
             if i in self.capitalization:
                 current_input[i] = current_input[i].capitalize()
@@ -87,13 +87,11 @@ class PunctuationHandler():
         return output
 
 if __name__ == '__main__':
-    sentence = 'Day la . ("mot cau").'
-    sentence2 = 'đây là . ("một câu").'
-    sentence3 = 'đây là một câu'
+    
+    sentence = '- Chao, toi + - > khoe!'
+    sentence2 = ['chào', 'tôi', 'khỏe']
     a = PunctuationHandler()
-    a.capital_only_mode = True
     print(a.remover(sentence))
     print(a.converter(sentence2))
-    a.capital_only_mode = False
-    print(a.remover(sentence))
-    print(a.converter(sentence3))
+    
+    

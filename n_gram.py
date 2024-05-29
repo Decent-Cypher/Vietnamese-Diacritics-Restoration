@@ -6,7 +6,7 @@ from tqdm import tqdm
 from nltk import bigrams, trigrams
 from collections import Counter, defaultdict
 from nltk.lm.preprocessing import padded_everygram_pipeline
-from nltk.lm import MLE, Laplace, KneserNeyInterpolated, WittenBellInterpolated
+from nltk.lm import MLE, Laplace, StupidBackoff, AbsoluteDiscountingInterpolated, KneserNeyInterpolated, WittenBellInterpolated
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from utility import accuracy_score
 import csv
@@ -36,12 +36,12 @@ def preprocess_corpus(train_filename, min_frequency = 4):
             count[token] += 1
     rare_words = []
     for k, v in count.items():
-        if v < 3:
+        if v < min_frequency:
             rare_words.append(k)
     for sent in tqdm(corpus):
         for i in range(len(sent)):
             if sent[i] in rare_words:
-                sent[i] = "<unk>"
+                sent[i] = "<UNK>"
     return corpus
 
 def save_model(train_filename, model, n = 3, model_filename = 'kneserney_ngram.pkl'):
@@ -89,64 +89,77 @@ def gen_accents_word(word):
     return all_accent_word
 
 # beam search
-def beam_search(words, model, k=3):
-  """
-    words: A list of words representing the input sequence.
-    model: A language model object used to score the likelihood of word sequences. 
-    k: Beam width, i.e., the number of sequences to keep at each step. Default value is 3.
-  """
-  sequences = []
-  for idx, word in enumerate(words):
-    if idx == 0:
-      sequences = [([x], 0.0) for x in gen_accents_word(word)]
-    else:
-      all_sequences = []
-      for seq in sequences:
-        for next_word in gen_accents_word(word):
-          current_word = seq[0][-1]
-          try:
-              previous_word = seq[0][-2]
-              score = model.logscore(next_word, [previous_word, current_word])
-          except:
-              score = model.logscore(next_word, [current_word])
-          new_seq = seq[0].copy()
-          new_seq.append(next_word)
-          all_sequences.append((new_seq, seq[1] + score))
-      all_sequences = sorted(all_sequences,key=lambda x: x[1], reverse=True)
-      sequences = all_sequences[:k]
-  return sequences
+# def beam_search(words, model, k=3):
+#   """
+#     words: A list of words representing the input sequence.
+#     model: A language model object used to score the likelihood of word sequences. 
+#     k: Beam width, i.e., the number of sequences to keep at each step. Default value is 3.
+#   """
+#   sequences = []
+#   for idx, word in enumerate(words):
+#     if idx == 0:
+#       sequences = [([x], 0.0) for x in gen_accents_word(word)]
+#     else:
+#       all_sequences = []
+#       for seq in sequences:
+#         for next_word in gen_accents_word(word):
+#           current_word = seq[0][-1]
+#           try:
+#               previous_word = seq[0][-2]
+#               score = model.logscore(next_word, [previous_word, current_word])
+#           except:
+#               score = model.logscore(next_word, [current_word])
+#           new_seq = seq[0].copy()
+#           new_seq.append(next_word)
+#           all_sequences.append((new_seq, seq[1] + score))
+#       all_sequences = sorted(all_sequences,key=lambda x: x[1], reverse=True)
+#       sequences = all_sequences[:k]
+#   return sequences
 
-def beam_search1(tokens, model, b = 3):
+def beam_search(tokens, model, b=3, n=3):
+    """
+    tokens: A list of words representing the input sequence.
+    model: A language model object used to score the likelihood of word sequences. 
+    b: Beam width, i.e., the number of sequences to keep at each step. Default value is 3.
+    """
     candidates = []
-    for idx in range(len(tokens)):
+    l = len(tokens)
+    for idx in range(l+1):
         d = [] # hold the probability of every combination of words
-        accent_words = gen_accents_word(tokens[idx])
         if idx == 0:
+            accent_words = gen_accents_word(tokens[idx])
             for word in accent_words:
                 log_score = model.logscore(word, ['<s>', '<s>'])
                 d.append([[word], log_score])
-                print(f"{word} {log_score}")
+                # print(f"{word} {log_score}")
+        elif idx == l:
+            for candidate in candidates:
+                log_score = model.logscore('</s>', [candidate[0][idx-2], candidate[0][idx-1]])
+                d.append([candidate[0], log_score + candidate[1]])
+                # print(f'Probability of "EOS" given {candidate[0]}: {log_score}')
+                # print(f'Probability of "{candidate[0]}: {log_score + candidate[1]}')
         else:
+            accent_words = gen_accents_word(tokens[idx])
             for candidate in candidates:
                 for word in accent_words:
                     if idx == 1:
                         log_score = model.logscore(word, ['<s>', candidate[0][idx-1]])
                     else:
-                        log_score = model.logscore(word, candidate[0])
-                    print(f'Probability of "{word}" given {candidate[0]}: {log_score}')
-                    print(f'Probability of "{candidate[0]+[word]}: {log_score + candidate[1]}')
+                        log_score = model.logscore(word, [candidate[0][idx-2], candidate[0][idx-1]])
+                    # print(f'Probability of "{word}" given {candidate[0]}: {log_score}')
+                    # print(f'Probability of "{candidate[0]+[word]}: {log_score + candidate[1]}')
                     d.append([candidate[0]+[word], log_score + candidate[1]])
-        print(f"{idx}. \n{d}")
+        # print(f"{idx}. \n{d}")
         candidates = sorted(d, key=lambda x: x[1], reverse=True)[:b]
-        print(candidates)
+        # print(candidates)
     return candidates
 
 
-def predict_sentence(sentence: string):
+def predict(sentence: string):
     p = PunctuationHandler()
     print(p.remover(sentence))
     model = pickle.load(open("kneserney_ngram.pkl", "rb"))
-    result = beam_search1(p.remover(sentence), model)
+    result = beam_search(p.remover(sentence), model)
     print("After accents insertion: " + p.converter(result[0][0]))
     return p.converter(result[0][0])
 
@@ -160,7 +173,7 @@ def predict_testset(model_filename = "kneserney_ngram.pkl", X_test_filename = 't
             sentence = X_test[i]
             input_tokens = tokenize(sentence)
             print(input_tokens)
-            result = beam_search1(input_tokens, model)
+            result = beam_search(input_tokens, model)
             sentence_pred = ' '.join(result[0][0])
             print("After accents insertion: " + sentence_pred)
             writer.writerow([sentence_pred])
@@ -181,7 +194,15 @@ def print_report(Y_pred_csv = 'pred_Y_200.csv', Y_test_pkl = 'testset_200\\test_
 
     print('Testing Set Accuracy:', accuracy_score(Y_test_arr, Y_pred_arr))    
     
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    n = 3
+    model = KneserNeyInterpolated(n)  # discount = 0.1
+    # model = Laplace(n)
+    # model = StupidBackoff(n) # alpha = 0.4
+    save_model(train_filename = "X_train_new.pkl", model = model, n = n, model_filename = 'kneserney_trigram.pkl')
+
+
+
 
 
                 
