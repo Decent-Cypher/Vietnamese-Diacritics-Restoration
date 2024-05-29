@@ -210,7 +210,7 @@ if __name__ == "__main__":
     model = KneserNeyInterpolated(order=n, vocabulary=vocab)  # discount = 0.1
     model = Laplace(order=n, vocabulary=vocab)
     model = StupidBackoff(order=n, vocabulary=vocab) # alpha = 0.4
-    save_model(train_data=train_data, padded_sents=padded_sents, model = model, n = n, model_filename = 'kneserney_trigram.pkl')
+    save_model(train_data=train_data, padded_sents=padded_sents, model = model, n = n, model_filename = 'N_gram_model\\neserney_trigram.pkl')
 
 
 
