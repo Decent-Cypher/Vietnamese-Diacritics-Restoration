@@ -1,23 +1,31 @@
 import re
 
+# - Xin chao, toi la B.
+
+# punctuation: "-   xin   ,        ."
+# capital: vị trí trong câu gốc có capitalization
+# token_position: vị trí bắt đầu mỗi token trong câu gốc
+
+# ['xin', 'chao', 'toi', 'la', 'b']
+
 class PunctuationHandler():
-    capital_only_mode = False
-    special_characters = "!@#$%^&*()-+?_=,.<>'/\""
-    # current_input = []     input split by spaces. E.g. This is ("A sentence").       ->      ["This", "is", "(\"a", "sentence\")."]
-    pre_punctuation = []   # List of special characters at the beginning of each word  ->      ['', '', '("', '']
-    post_punctuation = []  # List of special characters at the end of each word        ->      ['', '', '', '").']
-    capitalization = []    # List of indices of capitalized words.                     ->      [0,2]
-    punctuated_words = dict()
+    
     
     def __init__(self) -> None:
-        pass
+        self.capital_only_mode = False
+        self.special_characters = "!@#$%^&*()-+?_=,.<>'/\""
+        # current_input = []     input split by spaces. E.g. This is ("A sentence").       ->      ["This", "is", "(\"a", "sentence\")."]
+        self.pre_punctuation = []   # List of special characters at the beginning of each word  ->      ['', '', '("', '']
+        self.post_punctuation = []  # List of special characters at the end of each word        ->      ['', '', '', '").']
+        self.capitalization = []    # List of indices of capitalized words.                     ->      [0,2]
+        self.punctuated_words = dict()
     
     def remover(self, input):
         current_input = input.split()
         for i in range(len(current_input)):
             current_word = current_input[i]
             # Check if the word is full of special characters
-            if re.search("[A-Za-z0-9]",current_word) == None:
+            if re.search("[A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]",current_word) == None:
                 self.punctuated_words[i] = current_word
                 current_input[i] = ''
                 self.pre_punctuation.append('')
@@ -52,8 +60,8 @@ class PunctuationHandler():
             else:
                 self.post_punctuation.append('')       
                 
-            # Handling capitalization
-            if current_word[0].isupper():
+            # Handling self.capitalization
+            if current_word != "" and current_word[0].isupper():
                 self.capitalization.append(i)
                 current_input[i] = current_word.lower()
         
@@ -73,7 +81,7 @@ class PunctuationHandler():
             current_input.insert(i, self.punctuated_words[i])
         
         for i in range(len(current_input)):        
-            # Return capitalization
+            # Return self.capitalization
             if i in self.capitalization:
                 current_input[i] = current_input[i].capitalize()
                 
@@ -88,10 +96,13 @@ class PunctuationHandler():
 
 if __name__ == '__main__':
     
-    sentence = '- Chao, toi + - > khoe!'
-    sentence2 = ['chào', 'tôi', 'khỏe']
+    sentence = 'Vay ma em ko nghi lai co ngay hom nay dau anh a, em ko muon chung ta xu co duoc ko anh"'
     a = PunctuationHandler()
-    print(a.remover(sentence))
-    print(a.converter(sentence2))
+
+    tokens = a.remover(sentence)
+    print(a.self.capitalization)
+    print(a.self.punctuated_words)
+
+    print(tokens)
     
     
