@@ -1,4 +1,5 @@
 import re
+import string
 
 # - Xin chao, toi la B.
 
@@ -9,100 +10,77 @@ import re
 # ['xin', 'chao', 'toi', 'la', 'b']
 
 class PunctuationHandler():
+    def __init__(self):
+        # self.texts = []
+        self.special_characters = []
+        self.capital = []
+        self.token_position = []
+        # self.tokenized_output = []
+
+    def remover(self, texts : list[str]):
+        tokenized_output = []
+        token_pattern = r"[A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]+([^ ]*[A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]+)?"
+        special_char_pattern = r"([!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\ ]*[ ]+[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\ ]*|^[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\]+|[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\]+$)"
+        capital_pattern = r"[A-ZẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]"
+        # self.texts = texts
+        for text in texts:
+            token_matches = re.finditer(token_pattern, text)
+            sent_tokens = []
+            sent_tokens_pos = []
+            sent_special_char = []
+            sent_capital = []
+            for match in token_matches:
+                matched_text = match.group()
+                start_pos = match.start()
+                end_pos = match.end()
+                sent_tokens_pos.append([matched_text, start_pos])
+                sent_tokens.append(matched_text.lower())
+                # print(f"Token match found from {start_pos} to {end_pos}")
+            special_matches = re.finditer(special_char_pattern, text)
+            for match in special_matches:
+                matched_text = match.group()
+                sent_special_char.append([matched_text, match.start()])
+                print(f"Special match found: {matched_text}, start at {match.start()}")
+            capital_matches = re.finditer(capital_pattern, text)
+            for match in capital_matches:
+                # matched_text = match.group()
+                sent_capital.append(match.start())
+                # print(f"Capital match found: {matched_text}, start at {match.start()}")
+            tokenized_output.append(sent_tokens)
+            self.token_position.append(sent_tokens_pos)
+            self.special_characters.append(sent_special_char)
+            self.capital.append(sent_capital)
+        return tokenized_output
     
-    
-    def __init__(self) -> None:
-        self.capital_only_mode = False
-        self.special_characters = "!@#$%^&*()-+?_=,.<>'/\""
-        # current_input = []     input split by spaces. E.g. This is ("A sentence").       ->      ["This", "is", "(\"a", "sentence\")."]
-        self.pre_punctuation = []   # List of special characters at the beginning of each word  ->      ['', '', '("', '']
-        self.post_punctuation = []  # List of special characters at the end of each word        ->      ['', '', '', '").']
-        self.capitalization = []    # List of indices of capitalized words.                     ->      [0,2]
-        self.punctuated_words = dict()
-    
-    def remover(self, input):
-        current_input = input.split()
-        for i in range(len(current_input)):
-            current_word = current_input[i]
-            # Check if the word is full of special characters
-            if re.search("[A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]",current_word) == None:
-                self.punctuated_words[i] = current_word
-                current_input[i] = ''
-                self.pre_punctuation.append('')
-                self.post_punctuation.append('')
-                continue
-            
-            # Handling pre-punctuation
-            if len(current_word) > 1 and current_word[1] in self.special_characters:
-                self.pre_punctuation.append(current_word[0:2])
-                current_word = current_word[2:]
-                current_input[i] = current_word
-            elif current_word[0] in self.special_characters:
-                self.pre_punctuation.append(current_word[0])
-                current_word = current_word[1:]
-                current_input[i] = current_word
-            else:
-                self.pre_punctuation.append('')
-            
-            # Handling post-punctuation
-            if len(current_word) > 3 and current_word[-3] in self.special_characters:
-                self.post_punctuation.append(current_word[-3:])
-                current_word = current_word[:-3]
-                current_input[i] = current_word
-            elif len(current_word) > 2 and current_word[-2] in self.special_characters:
-                self.post_punctuation.append(current_word[-2:])
-                current_word = current_word[:-2]
-                current_input[i] = current_word
-            elif len(current_word) > 1 and current_word[-1] in self.special_characters:
-                self.post_punctuation.append(current_word[-1:])
-                current_word = current_word[:-1]
-                current_input[i] = current_word
-            else:
-                self.post_punctuation.append('')       
-                
-            # Handling self.capitalization
-            if current_word != "" and current_word[0].isupper():
-                self.capitalization.append(i)
-                current_input[i] = current_word.lower()
-        
-        while '' in current_input:
-            current_input.remove('')
-            
-        if not self.capital_only_mode:
-            return current_input
-        else:
-            return input.lower().split()
-            
-    def converter(self, input):
-        input = ' '.join(input)
-        input = ''.join(e for e in input if e.isalnum() or e == ' ')
-        current_input = input.split()
-        for i in self.punctuated_words:
-            current_input.insert(i, self.punctuated_words[i])
-        
-        for i in range(len(current_input)):        
-            # Return self.capitalization
-            if i in self.capitalization:
-                current_input[i] = current_input[i].capitalize()
-                
-            # Return pre-punctuation
-            current_input[i] = self.pre_punctuation[i] + current_input[i]
-    
-            # Return post-punctuation
-            current_input[i] = current_input[i] + self.post_punctuation[i]
-            
-        output = ' '.join(current_input)
+    def converter(self, input: list[list[str]]):
+        output = []
+        for i in range(len(input)):
+            sent_tokens = input[i]
+            assert len(sent_tokens) == len(self.token_position[i])
+            sent = ""
+            idx = 0
+            start_char_l = list(filter(lambda x: x[1] == 0, self.special_characters[i]))
+            for c in start_char_l:
+                sent += c[0]
+                idx += len(c[0])
+            for j in range((len(sent_tokens))):
+                token = sent_tokens[j]
+                assert len(token) == len(self.token_position[i][j][0])
+                sent += token
+                for c in self.capital[i]:
+                    if c >= idx and c < idx + len(token):
+                        sent = sent[:c] + sent[c].upper() + sent[c+1:]
+                idx = idx + len(token)
+                special_char_l = list(filter(lambda x: x[1] == idx, self.special_characters[i]))
+                for c in special_char_l:
+                    sent += c[0]
+                    idx += len(c[0])
+            output.append(sent)
         return output
 
-if __name__ == '__main__':
-    
-    sentence = 'Vay ma em ko nghi lai co ngay hom nay dau anh a, em ko muon chung ta xu co duoc ko anh"'
-    a = PunctuationHandler()
+if __name__ == "__main__":
+    p = PunctuationHandler()
+    a = p.remover([" - Hôm, nay !là   Char%Les%29.!  \" HuHufnjnR@ \]\""])
+    print(a)
+    print(p.converter(a)[0])
 
-    tokens = a.remover(sentence)
-    print(a.self.capitalization)
-    print(a.self.punctuated_words)
-
-    print(tokens)
-    
-    
