@@ -3,3 +3,4 @@ __pycache__
 env/
 .gitignore
 requirements.txt
+final_data_txt/
