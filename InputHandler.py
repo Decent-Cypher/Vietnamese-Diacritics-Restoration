@@ -44,11 +44,7 @@ class InputHandler():
                 matched_text = match.group()
                 sent_special_char.append([matched_text, match.start()])
                 # print(f"Special match found: {matched_text}, start at {match.start()}")
-            capital_matches = re.finditer(capital_pattern, text)
-            for match in capital_matches:
-                # matched_text = match.group()
-                sent_capital.append(match.start())
-                # print(f"Capital match found: {matched_text}, start at {match.start()}")
+
 
             date_matches = re.finditer(date_pattern, text)
             for match in date_matches:
@@ -69,6 +65,12 @@ class InputHandler():
                 sent_dates_label.append(["<number>", s, e])
                 sent_numbers.append([matched_text, s, e])
             # print(text)
+            capital_matches = re.finditer(capital_pattern, text)
+            for match in capital_matches:
+                # matched_text = match.group()
+                sent_capital.append(match.start())
+                # print(f"Capital match found: {matched_text}, start at {match.start()}")
+                
             word_matches = re.finditer(word_pattern, text)
             for match in word_matches:
                 matched_text = match.group()
@@ -80,7 +82,7 @@ class InputHandler():
             sent_tokens_pos = sent_tokens_pos + sent_dates_label + sent_numbers_label
             sorted_tokens = sorted(sent_tokens_pos, key = lambda x: x[1])
             for t in sorted_tokens:
-                sent_tokens.append(t[0])
+                sent_tokens.append(t[0].lower())
 
             tokenized_output.append(sent_tokens)
             self.token_position.append(sent_tokens_pos)
