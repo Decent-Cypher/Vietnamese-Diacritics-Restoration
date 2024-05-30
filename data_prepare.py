@@ -42,7 +42,7 @@ def gen_accents_word(word):
     '''
     word_no_accent = remove_vn_accent(word.lower())
     all_accent_word = {word}
-    for w in open('others/all-vietnamese-syllables.txt').read().splitlines():
+    for w in open('others/all-vietnamese-syllables.txt', encoding='utf-8').read().splitlines():
         w_no_accent = remove_vn_accent(w.lower())
         if w_no_accent == word_no_accent:
             all_accent_word.add(w)

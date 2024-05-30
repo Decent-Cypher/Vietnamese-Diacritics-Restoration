@@ -40,7 +40,7 @@ class PunctuationHandler():
             for match in special_matches:
                 matched_text = match.group()
                 sent_special_char.append([matched_text, match.start()])
-                print(f"Special match found: {matched_text}, start at {match.start()}")
+                # print(f"Special match found: {matched_text}, start at {match.start()}")
             capital_matches = re.finditer(capital_pattern, text)
             for match in capital_matches:
                 # matched_text = match.group()

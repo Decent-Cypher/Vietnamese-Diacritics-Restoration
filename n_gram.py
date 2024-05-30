@@ -13,7 +13,7 @@ import csv
 import numpy as np
 from keras.preprocessing.sequence import pad_sequences
 from PunctuationHandler import PunctuationHandler
-from data_prepare import remove_vn_accent
+from data_prepare import gen_accents_word
 
 def tokenize(sent: str):
     """
@@ -45,10 +45,14 @@ def preprocess_corpus(train_filename, min_frequency = 4):
     return corpus
 
 def preprocess_train(train_filename='Y_train_new.pkl', n=3, unk_cutoff=4):
-    Y_train = pickle.load(open(train_filename, "rb"))
-    corpus = [tokenize(sent) for sent in Y_train]
+    # Y_train = pickle.load(open(train_filename, "rb"))
+    with open(train_filename, 'r', encoding='utf-8') as f:
+        Y_train = f.readlines()
+    p = PunctuationHandler()
+    corpus = p.remover(Y_train)
     train_data, padded_sents = padded_everygram_pipeline(n, corpus)
     vocab = Vocabulary(padded_sents, unk_cutoff=unk_cutoff)
+    print("Finished preprocessing training data.")
     return train_data, padded_sents, vocab
 
 def save_model(train_data, padded_sents, model, n = 3, model_filename = 'kneserney_ngram.pkl'):
@@ -83,18 +87,6 @@ def generate_sent(model, num_words, pre_words=[]):
         content.append(token)
     return detokenize(content)
 
-def gen_accents_word(word):
-    """
-    :param word: A lower-case string with no punctuations and accents
-    """
-    word_no_accent = word.lower()
-    all_accent_word = {word}
-    for w in open('all-vietnamese-syllables.txt', encoding="utf-8").read().splitlines():
-        w_no_accent = remove_vn_accent(w.lower())
-        if w_no_accent == word_no_accent:
-            all_accent_word.add(w)
-    return all_accent_word
-
 # beam search
 # def beam_search(words, model, k=3):
 #   """
@@ -123,7 +115,7 @@ def gen_accents_word(word):
 #       sequences = all_sequences[:k]
 #   return sequences
 
-def beam_search(tokens, model, b=3, n=3):
+def beam_search(tokens, model, b=3):
     """
     tokens: A list of words representing the input sequence.
     model: A language model object used to score the likelihood of word sequences. 
@@ -162,16 +154,16 @@ def beam_search(tokens, model, b=3, n=3):
     return candidates
 
 
-def predict(texts: list[str]):
+def predict(model_filename, texts: list[str]):
     output = []
-    for sentence in texts:
-        p = PunctuationHandler()
-        print(p.remover(sentence))
-        model = pickle.load(open("kneserney_ngram.pkl", "rb"))
-        result = beam_search(p.remover(sentence), model)
-        print("After accents insertion: " + p.converter(result[0][0]))
-        output.append(p.converter(result[0][0]))
-    return output
+    p = PunctuationHandler()
+    tokenized_texts = p.remover(texts)
+    model = pickle.load(open(model_filename, "rb"))
+    for sentence in tokenized_texts:
+        result = beam_search(sentence, model)
+        # print("After accents insertion: " + p.converter(result[0][0]))
+        output.append(result[0][0])
+    return p.converter(output)
 
 def predict_testset(model_filename = "kneserney_ngram.pkl", X_test_filename = 'testset_200\\test_X_200.pkl', Y_pred_csv = 'pred_Y_200.csv'):
     # detokenize = TreebankWordDetokenizer().detokenize
@@ -205,13 +197,16 @@ def print_report(Y_pred_csv = 'pred_Y_200.csv', Y_test_pkl = 'testset_200\\test_
     print('Testing Set Accuracy:', accuracy_score(Y_test_arr, Y_pred_arr))    
     
 if __name__ == "__main__":
+    train_filename = 'Final_Political.txt'
     n = 3
-    train_data, padded_sents, vocab = preprocess_train()
+    train_data, padded_sents, vocab = preprocess_train(train_filename=train_filename, unk_cutoff=1)
     model = KneserNeyInterpolated(order=n, vocabulary=vocab)  # discount = 0.1
-    model = Laplace(order=n, vocabulary=vocab)
-    model = StupidBackoff(order=n, vocabulary=vocab) # alpha = 0.4
-    save_model(train_data=train_data, padded_sents=padded_sents, model = model, n = n, model_filename = 'N_gram_model\\neserney_trigram.pkl')
-
+    # model = Laplace(order=n, vocabulary=vocab)
+    # model = StupidBackoff(order=n, vocabulary=vocab) # alpha = 0.4
+    model_filename = 'N_gram_model\\kneserney_trigram_political_cutoff1.pkl'
+    save_model(train_data=train_data, padded_sents=padded_sents, model = model, n = n, model_filename = model_filename)
+    sentence = 'Doi voi giao duc, can su dong thuan giua gia dinh, nha truong va xa hoi.'
+    print(predict(model_filename=model_filename, texts=[sentence,]))
 
 
 
