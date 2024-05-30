@@ -1,5 +1,10 @@
 data_small/
 __pycache__
 env/
+
+Transformer/Model/
+
 .gitignore
+
 requirements.txt
+draft.py

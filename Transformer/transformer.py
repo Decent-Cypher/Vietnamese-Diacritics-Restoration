@@ -140,26 +140,26 @@ class Encoder(tf.keras.layers.Layer):
 
 # Step 1: Load The model
 # load json and create model
-json_file = open('Model/transformer.json', 'r')
+json_file = open('Transformer/Model/transformer.json', 'r')
 model_json = json_file.read()
 json_file.close()
 
 model = keras.models.model_from_json(model_json)
 # load weights into new model
-model.load_weights("Model/transformer_weights.h5")
+model.load_weights("Transformer/Model/transformer_weights.h5")
 print("Loaded model from disk")
 
 # Step 2: Convert Text To Sequences
-filename = 'Dictionary/tokenizer.pickle'
+filename = 'Transformer/Dictionary/tokenizer.pickle'
 tokenizer = pickle.load(open(filename, 'rb'))
 print(tokenizer.texts_to_sequences(["Hom nay troi dep, troi trong xanh bao la"]))
 
 # Step 3: Load word-index json file
-with open('Dictionary/word_to_index.json', 'r') as file:
+with open('Transformer/Dictionary/word_to_index.json', 'r') as file:
     # Load JSON data into a dictionary
     word2idx = json.load(file)
 
-with open('Dictionary/index_to_word.json', 'r') as file:
+with open('Transformer/Dictionary/index_to_word.json', 'r') as file:
     idx2word = json.load(file)
 
 # Step 4: Create a function convert sentences to sequences
@@ -199,4 +199,4 @@ def get_prediction(list_of_queries: list):
 
 
 # Step 7: Test the result
-print(get_prediction(["thay khoat cua chung em that la mot giang vien tuyet voi"]))
+print(get_prediction(["hom nay toi gap mot chu cong an danh dan"]))

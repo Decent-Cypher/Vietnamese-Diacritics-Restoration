@@ -42,8 +42,7 @@ def predict(input_texts:list):
 
 if __name__ == '__main__':
     test = [
-        'Hom nay troi that la dep',
-        'thay khoat cua chung em that la mot giang vien tuyet voi'
+        'hom nay toi gap mot chu cong an danh dan'
     ]
     prediction = predict(test)
     print(prediction)
