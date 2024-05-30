@@ -4,6 +4,8 @@ import pickle
 import csv
 from InputHandler import InputHandler
 from nltk import word_tokenize
+import random
+from sklearn.model_selection import train_test_split
 
 dataset_file = "corpus-full/corpus-full-v2.txt"
 
@@ -259,14 +261,29 @@ def change_syllables(data_filename):
     
 
 if __name__ == '__main__':
-    # tokens = ["khỏe", 'qúy']
-    # syllable_pairs = [['ỏe', 'oẻ'], ['óe', 'oé'], ['òe', 'oè'], ['õe', 'oẽ'], ['ọe', 'oẹ'],
-    #                 ['õa', 'oã'], ['óa', 'oá'], ['òa', 'oà'], ['ỏa', 'oả'], ['ọa', 'oạ'],
-    #                 ['úy', 'uý'], ['ùy', 'uỳ'], ['ủy', 'uỷ'], ['ũy', 'uỹ'], ['ụy', 'uỵ']]
-    # for i in range(len(tokens)):
-    #     for s in syllable_pairs:
-    #         if tokens[i][-2:] == s[0]:
-    #             tokens[i] = re.sub(s[0], s[1], tokens[i])
-    #             changed = True
-    # print(tokens)
-    change_syllables('Additional Data\\doisong_120k.pkl')
+    # data = pickle.load(open('final.pkl', 'rb'))
+    # Y = data
+    # random.shuffle(Y)
+    # X = []
+    # for sent in tqdm(Y):
+    #     X.append(remove_diacritics(sent))
+    # X_train, X_test, y_train, y_test = train_test_split(X, Y , random_state=104,test_size=0.25, shuffle=True)
+    # with open('Additional Data\\final_train_X.pkl', 'wb+') as f:
+    #     pickle.dump(X_train, f)
+    # with open('Additional Data\\final_train_Y.pkl', 'wb+') as f:
+    #     pickle.dump(y_train, f)
+    # with open('Additional Data\\final_test_X.pkl', 'wb+') as f:
+    #     pickle.dump(X_test, f)
+    # with open('Additional Data\\final_test_Y.pkl', 'wb+') as f:
+    #     pickle.dump(y_test, f)
+
+    i = 5
+    data = pickle.load(open('Additional Data\\final_test_X.pkl', 'rb'))
+    print(data[i])
+    data = pickle.load(open('Additional Data\\final_test_Y.pkl', 'rb'))
+    print(data[i])
+
+
+    
+    
+
