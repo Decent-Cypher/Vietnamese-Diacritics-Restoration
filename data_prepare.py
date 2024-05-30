@@ -228,7 +228,7 @@ def change_syllables(data_filename):
                       ['úy', 'uý'], ['ùy', 'uỳ'], ['ủy', 'uỷ'], ['ũy', 'uỹ'], ['ụy', 'uỵ']]
     count = 0
     for j in range(len(data)):
-        p = PunctuationHandler()
+        p = InputHandler()
         try:
             tokens = p.remover(data[j])
         except IndexError:

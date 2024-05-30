@@ -180,7 +180,7 @@ def remove_punctuation(text: str) -> str:
 
 # Step 6: Create a function to get the prediction from the model
 def get_prediction(list_of_queries: list):
-    punctual_handler = PunctuationHandler()
+    punctual_handler = InputHandler()
     punctual_handler.remover(list_of_queries)
     text_queries = convert_text_to_sequences(list_of_queries)
     p = model.predict(text_queries)
