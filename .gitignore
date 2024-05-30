@@ -4,3 +4,4 @@ env/
 .gitignore
 requirements.txt
 final_data_txt/
+final_data.txt

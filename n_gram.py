@@ -55,7 +55,7 @@ def preprocess_train(train_filename='Y_train_new.pkl', n=3, unk_cutoff=4):
     print("Finished preprocessing training data.")
     return train_data, padded_sents, vocab
 
-def save_model(train_data, padded_sents, model, n = 3, model_filename = 'kneserney_ngram.pkl'):
+def save_model(train_data, padded_sents, model, model_filename = 'kneserney_ngram.pkl'):
     # Create a corpus of words from training set
     # corpus = preprocess_corpus(train_filename)
 
@@ -121,6 +121,7 @@ def beam_search(tokens, model, b=3):
     model: A language model object used to score the likelihood of word sequences. 
     b: Beam width, i.e., the number of sequences to keep at each step. Default value is 3.
     """
+    n = model.order
     candidates = []
     l = len(tokens)
     for idx in range(l+1):
@@ -197,14 +198,14 @@ def print_report(Y_pred_csv = 'pred_Y_200.csv', Y_test_pkl = 'testset_200\\test_
     print('Testing Set Accuracy:', accuracy_score(Y_test_arr, Y_pred_arr))    
     
 if __name__ == "__main__":
-    train_filename = 'Final_Political.txt'
+    train_filename = 'final_data_txt\\Final_Political.txt'
     n = 3
     train_data, padded_sents, vocab = preprocess_train(train_filename=train_filename, unk_cutoff=1)
     model = KneserNeyInterpolated(order=n, vocabulary=vocab)  # discount = 0.1
-    # model = Laplace(order=n, vocabulary=vocab)
-    # model = StupidBackoff(order=n, vocabulary=vocab) # alpha = 0.4
+    model = Laplace(order=n, vocabulary=vocab)
+    model = StupidBackoff(order=n, vocabulary=vocab) # alpha = 0.4
     model_filename = 'N_gram_model\\kneserney_trigram_political_cutoff1.pkl'
-    save_model(train_data=train_data, padded_sents=padded_sents, model = model, n = n, model_filename = model_filename)
+    save_model(train_data=train_data, padded_sents=padded_sents, model = model, model_filename = model_filename)
     sentence = 'Doi voi giao duc, can su dong thuan giua gia dinh, nha truong va xa hoi.'
     print(predict(model_filename=model_filename, texts=[sentence,]))
 

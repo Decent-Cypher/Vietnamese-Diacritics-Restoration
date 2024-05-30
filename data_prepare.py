@@ -229,17 +229,18 @@ def change_syllables(data_filename):
                       ['õa', 'oã'], ['óa', 'oá'], ['òa', 'oà'], ['ỏa', 'oả'], ['ọa', 'oạ'],
                       ['úy', 'uý'], ['ùy', 'uỳ'], ['ủy', 'uỷ'], ['ũy', 'uỹ'], ['ụy', 'uỵ']]
     count = 0
-    for j in range(len(data)):
-        p = InputHandler()
-        try:
-            tokens = p.remover(data[j])
-        except IndexError:
-            print('ERROR here')
-            print(data[j])
+    p = InputHandler()
+    tokenized_data = p.remover(data)
+    for j in range(len(tokens)):
+        # try:
+        #     tokens = p.remover(data[j])
+        # except IndexError:
+        #     print('ERROR here')
+        print(data[j])
 
-            break
+        #     break
         
-        continue
+        # continue
         # print(tokens)
         changed = False
         for i in range(len(tokens)):
@@ -250,18 +251,18 @@ def change_syllables(data_filename):
         
         data[j] = p.converter(tokens)
         if changed:
-            
-            print(data[j])
+            print('-> ' + data[j])
             count += 1
         if not changed:
-            print("NO")
-        print()
+            print("-> NO")
         #     print('-> '+data[j])
 
     
 
 if __name__ == '__main__':
     # data = pickle.load(open('final.pkl', 'rb'))
+    # with open("final_data.txt", "r", encoding='utf-8') as file:
+    #     data = file.readlines()
     # Y = data
     # random.shuffle(Y)
     # X = []
@@ -276,12 +277,13 @@ if __name__ == '__main__':
     #     pickle.dump(X_test, f)
     # with open('Additional Data\\final_test_Y.pkl', 'wb+') as f:
     #     pickle.dump(y_test, f)
-
     i = 5
     data = pickle.load(open('Additional Data\\final_test_X.pkl', 'rb'))
-    print(data[i])
-    data = pickle.load(open('Additional Data\\final_test_Y.pkl', 'rb'))
-    print(data[i])
+    print(len(data))
+    data = pickle.load(open('Additional Data\\final_train_Y.pkl', 'rb'))
+    print(len(data))
+
+
 
 
     
