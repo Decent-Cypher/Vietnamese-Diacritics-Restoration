@@ -12,7 +12,7 @@ from utility import accuracy_score
 import csv
 import numpy as np
 from keras.preprocessing.sequence import pad_sequences
-from PunctuationHandler import PunctuationHandler
+from InputHandler import InputHandler
 from data_prepare import gen_accents_word
 
 def tokenize(sent: str):
@@ -48,7 +48,7 @@ def preprocess_train(train_filename='Y_train_new.pkl', n=3, unk_cutoff=4):
     # Y_train = pickle.load(open(train_filename, "rb"))
     with open(train_filename, 'r', encoding='utf-8') as f:
         Y_train = f.readlines()
-    p = PunctuationHandler()
+    p = InputHandler()
     corpus = p.remover(Y_train)
     train_data, padded_sents = padded_everygram_pipeline(n, corpus)
     vocab = Vocabulary(padded_sents, unk_cutoff=unk_cutoff)
@@ -156,7 +156,7 @@ def beam_search(tokens, model, b=3):
 
 def predict(model_filename, texts: list[str]):
     output = []
-    p = PunctuationHandler()
+    p = InputHandler()
     tokenized_texts = p.remover(texts)
     model = pickle.load(open(model_filename, "rb"))
     for sentence in tokenized_texts:

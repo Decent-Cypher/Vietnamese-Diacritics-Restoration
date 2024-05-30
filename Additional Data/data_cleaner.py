@@ -30,7 +30,7 @@ def number_cleaner (output, final):
     out = open(final, "a", encoding="utf-8")
     text_data = [line.strip("\n") for line in text.readlines()]
     pattern1 = r"[A-Za-z0-9]{1,}/[A-Za-z0-9]{1,}/[A-ZĐa-z0-9-]{1,}" #remove 98/2010/ND-CP22 or stuff
-    pattern2 = r"[A-Za-z0-9]{1,}/[A-ZĐa-z0-9 -]{1,} " #remove 98/2010/QH33 or stuff
+    pattern2 = r"[A-Za-z0-9]{1,}/[A-ZĐa-z0-9 -]{1,} " #remove 98/2010 or stuff
     pattern3 = r"\d{1,}[.,]\d{1,}" #remove numbers with decimal places
     pattern4 = r"\d{2,}" #remove whole numbers with more than or equals 2 digits
     pattern5 = r"\d{1,}/\d{1,}" #remove fractions
