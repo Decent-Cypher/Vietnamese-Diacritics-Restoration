@@ -7,3 +7,5 @@ https://husteduvn-my.sharepoint.com/:u:/g/personal/vinh_tt225464_sis_hust_edu_vn
 The data dumped inside the .pkl files is stored inside Python Lists, each list containing exactly 50.000 items.
 
 Additionally, in the "data_cleaner.py" file, you will find the code to replace in-text dates and numbers with <date> and <number> tokens. Remember to replace the three paths input, output, and final, to ensure the code runs properly.
+
+Further in this file, you'll find the data named "final_test_X", "final_test_Y", "final_train_X", "final_train_Y". This whole additional dataset is divided for training and testing, with their respective ratio being 8:2.
