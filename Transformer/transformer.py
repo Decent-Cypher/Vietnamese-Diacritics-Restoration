@@ -5,7 +5,7 @@ import keras
 import tensorflow as tf
 import numpy as np
 from keras.preprocessing.sequence import pad_sequences
-from PunctuationHandler import PunctuationHandler
+from InputHandler import InputHandler
 
 
 #############  SERIALIZE KERAS OBJECTS  #############

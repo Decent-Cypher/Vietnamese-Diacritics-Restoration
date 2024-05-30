@@ -2,7 +2,7 @@ import re
 from tqdm import tqdm
 import pickle
 import csv
-from PunctuationHandler import PunctuationHandler
+from InputHandler import InputHandler
 from nltk import word_tokenize
 
 dataset_file = "corpus-full/corpus-full-v2.txt"
