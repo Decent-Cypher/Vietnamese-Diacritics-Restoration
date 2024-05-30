@@ -2,6 +2,6 @@ In this folder, there are 7 separate pickle (.pkl) files, one being the aggregat
 
 Below is the link to the .pkl file containing the whole contents of the other categories:
 
-https://husteduvn-my.sharepoint.com/:u:/g/personal/vinh_tt225464_sis_hust_edu_vn/ETXKeakOOVVCls0bJj6HwKoB_wJ3fyIWGVDN0sGe5Jb2uQ?e=hrkO87
+https://husteduvn-my.sharepoint.com/:u:/g/personal/vinh_tt225464_sis_hust_edu_vn/EQbkRY3sxB1Bk7hVEtUrWYUBFm8NXA4ysKtH1NWQG6X5Ug?e=lc5LxH
 
 The data dumped inside the .pkl files is stored inside Python Lists, each list containing exactly 50.000 items.
