@@ -5,6 +5,7 @@ import keras
 import tensorflow as tf
 import numpy as np
 from keras.preprocessing.sequence import pad_sequences
+from InputHandler import InputHandler
 
 
 #############  SERIALIZE KERAS OBJECTS  #############
@@ -172,9 +173,6 @@ def convert_text_to_sequences(text: list):
     return text_sequences
 
 
-print(convert_text_to_sequences(["Hom nay troi that dep"]))
-
-
 # Step 5: Create a function to remove punctuation from the sentence
 def remove_punctuation(text: str) -> str:
     return re.sub(r'[^\w\s]', '', text)
@@ -182,21 +180,35 @@ def remove_punctuation(text: str) -> str:
 
 # Step 6: Create a function to get the prediction from the model
 def get_prediction(list_of_queries: list):
+    punctual_handler = InputHandler()
+    punctual_handler.remover(list_of_queries)
     text_queries = convert_text_to_sequences(list_of_queries)
     p = model.predict(text_queries)
     p = np.argmax(p, axis=-1)
-    predict_output = []
+    output_list_temp = []
     for query in list_of_queries:
         user_query_split = remove_punctuation(query).lower().split(" ")
-        predict_output_temp = ""
+        predict_output_temp = []
         for t in range(len(user_query_split)):
             if user_query_split[t] not in idx2word.keys() or str(p[0][t]) not in idx2word[user_query_split[t]].keys():
-                predict_output_temp += user_query_split[t] + " "
+                predict_output_temp.append(user_query_split[t])
             else:
-                predict_output_temp += str(idx2word[user_query_split[t]][str(p[0][t])]) + " "
-        predict_output.append(predict_output_temp)
+                predict_output_temp.append(str(idx2word[user_query_split[t]][str(p[0][t])]))
+        output_list_temp.append(predict_output_temp)
+    predict_output = punctual_handler.converter(output_list_temp)
     return predict_output
 
 
 # Step 7: Test the result
-print(get_prediction(["hom nay toi gap mot chu cong an danh dan"]))
+if __name__ == "__main__":
+    print(get_prediction(["Hom nay, troi dang mua.", "Thay giao toi giang bai rat nhiet tinh."]))
+    while True:
+        for i in range(2):
+            user_query = input("Enter your query: ")
+            print(get_prediction([user_query]))
+        user_input = input("Enter 'q' to quit the application: ")
+        if user_input == 'q':
+            break
+        else:
+            continue
+

@@ -2,7 +2,7 @@ import re
 from tqdm import tqdm
 import pickle
 import csv
-from PunctuationHandler import PunctuationHandler
+from InputHandler import InputHandler
 from nltk import word_tokenize
 
 dataset_file = "corpus-full/corpus-full-v2.txt"
@@ -42,7 +42,7 @@ def gen_accents_word(word):
     '''
     word_no_accent = remove_vn_accent(word.lower())
     all_accent_word = {word}
-    for w in open('others/all-vietnamese-syllables.txt').read().splitlines():
+    for w in open('others/all-vietnamese-syllables.txt', encoding='utf-8').read().splitlines():
         w_no_accent = remove_vn_accent(w.lower())
         if w_no_accent == word_no_accent:
             all_accent_word.add(w)
@@ -228,7 +228,7 @@ def change_syllables(data_filename):
                       ['úy', 'uý'], ['ùy', 'uỳ'], ['ủy', 'uỷ'], ['ũy', 'uỹ'], ['ụy', 'uỵ']]
     count = 0
     for j in range(len(data)):
-        p = PunctuationHandler()
+        p = InputHandler()
         try:
             tokens = p.remover(data[j])
         except IndexError:
