@@ -5,3 +5,6 @@ env/
 requirements.txt
 final_data_txt/
 final_data.txt
+draft.py
+kneserney_bigram_full_cutoff1.txt
+100Tests.txt

@@ -25,7 +25,7 @@ class InputHandler():
         special_char_pattern = r"([!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\ ]*[ ]+[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\ ]*|^[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\]+|[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\]+$)"
         capital_pattern = r"[A-ZẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]"
         date_pattern = r"([nN]g[àa]y\s+\d{1,2}\s+th[áa]ng\s+\d{1,2}(\s+n[ăa]m\s+\d{4})?)"
-        number_pattern = r"([A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]{1,}/[A-Za-z0-9]{1,}(/[A-ZĐa-z0-9-ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]{1,})?|\d{1,}([.,/]\d{1,})?)"
+        number_pattern = r"([A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]{1,}/[A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]{1,}(/[A-ZĐa-z0-9-ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]{1,})?|\d{1,}([.,/]\d{1,})?)"
         token_pattern = r"([A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]+([^ ]*[A-Za-z0-9ạảãàáâậầấẩẫăắằặẳẵóòọõỏôộổỗồốơờớợởỡéèẻẹẽêếềệểễúùụủũưựữửừứíìịỉĩýỳỷỵỹđẠẢÃÀÁÂẬẦẤẨẪĂẮẰẶẲẴÓÒỌÕỎÔỘỔỖỒỐƠỜỚỢỞỠÉÈẺẸẼÊẾỀỆỂỄÚÙỤỦŨƯỰỮỬỪỨÍÌỊỈĨÝỲỶỴỸĐ]+)?|<date>|<number>)"
         # self.texts = texts
         for i in range(len(texts)):
@@ -44,6 +44,7 @@ class InputHandler():
                 matched_text = match.group()
                 sent_special_char.append([matched_text, match.start()])
                 # print(f"Special match found: {matched_text}, start at {match.start()}")
+
 
 
             date_matches = re.finditer(date_pattern, text)
@@ -65,6 +66,7 @@ class InputHandler():
                 sent_dates_label.append(["<number>", s, e])
                 sent_numbers.append([matched_text, s, e])
             # print(text)
+
             capital_matches = re.finditer(capital_pattern, text)
             for match in capital_matches:
                 # matched_text = match.group()
@@ -135,14 +137,13 @@ class InputHandler():
                     idx += len(c[0])
                 # print(sent)
             for c in self.capital[i]:
-                if c >= idx and c < idx + len(token):
-                    sent = sent[:c] + sent[c].upper() + sent[c+1:]
+                sent = sent[:c] + sent[c].upper() + sent[c+1:]
             output.append(sent)
         return output
 
 if __name__ == "__main__":
     i = InputHandler()
-    s = "Hôm nay là :ngay 24 thang 5 nam 2024. Tôi ăn 1/2 cái bánh, theo nghị định 45/21798/NĐ-CP."
+    s = "- Doi voi giao duc, can su dong thuan giu398a gia dinh,! nha 48 truong va xa hoi."
     out = i.remover([s,])
     print(out)
     print(i.converter(out))
