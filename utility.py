@@ -2,6 +2,22 @@ import pickle
 from tqdm import tqdm
 import csv
 import numpy as np
+from InputHandler import InputHandler
+
+def get_accuracy(list_inputs:list[str], list_outputs:list[str]):
+    assert len(list_inputs) == len(list_outputs)
+    IH_inp = InputHandler()
+    list_inputs = IH_inp.remover(list_inputs)
+    IH_out = InputHandler()
+    list_outputs = IH_out.remover(list_outputs)
+    count_true = 0
+    count_total = 0
+    for i in range(len(list_inputs)):
+        assert len(list_inputs[i]) == len(list_outputs[i])
+        for j in range(len(list_inputs[i])):
+            count_total += 1
+            count_true += int(list_inputs[i][j] == list_outputs[i][j])
+    return count_true/count_total
 
 def accuracy_score(Y_true, Y_pred):
     """

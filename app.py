@@ -291,7 +291,10 @@ class MainWindow(QMainWindow):
 		
 		# This debug program will make random predictions for testing
 		self.list_outputs = make_predictions(model_input, self.model)
-		print(self.list_outputs)
+
+		model_input = [inp.split(' ') for inp in model_input]
+		from utility import get_accuracy
+		
 
 		self.list_outputs = ih.converter([out.split(' ') for out in self.list_outputs])
 		# For the real program, you should replace the above line with self.list_outputs = make_predictions(self.list_inputs, self.algorithm) where make_predictions is a function which takes a list of strings and return a list of strings with the same number of elements

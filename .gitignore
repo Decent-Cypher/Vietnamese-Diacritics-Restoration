@@ -1,14 +1,9 @@
+env/
+data_large/
 data_small/
 __pycache__
-env/
 
-Transformer/Model/
+Transformer/Model/transformer_weights_final.h5
+Transformer/References/
 
 .gitignore
-100Tests.txt
-
-requirements.txt
-final_data.txt
-draft.py
-kneserney_bigram_full_cutoff1.txt
-100Tests.txt

@@ -13,7 +13,6 @@ def remove_punctuation(text: str) -> str:
 
 def convert_text_to_sequences(text):
     text_sequences = tokenizer_input.texts_to_sequences(text)
-    print(text_sequences)
     text_sequences = pad_sequences(text_sequences, maxlen=411, padding='post', value=0)
     return text_sequences
 
@@ -66,9 +65,17 @@ def predict(input_texts:list):
         output_texts.append(predict_output[:-1])
     return output_texts
 
-if __name__ == '__main__':
-    test = [
-        'hom nay toi gap mot chu cong an danh dan'
-    ]
+def accuracy_test():
+    test = open('100Tests.txt', 'r').read().splitlines()
+    real = open('100Tests (1).txt', 'r').read().splitlines()
+    from InputHandler import InputHandler
+    a = InputHandler()
+    test = a.remover(test)
+    test = [' '.join(sent) for sent in test]
     prediction = predict(test)
-    print(prediction)
+    from utility import get_accuracy
+    print(get_accuracy(prediction, real))
+
+
+if __name__ == '__main__':
+    accuracy_test()
