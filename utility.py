@@ -2,6 +2,23 @@ import pickle
 from tqdm import tqdm
 import csv
 import numpy as np
+from keras.preprocessing.sequence import pad_sequences
+from InputHandler import InputHandler
+
+def get_accuracy(list_inputs:list[str], list_outputs:list[str]):
+    assert len(list_inputs) == len(list_outputs)
+    IH_inp = InputHandler()
+    list_inputs = IH_inp.remover(list_inputs)
+    IH_out = InputHandler()
+    list_outputs = IH_out.remover(list_outputs)
+    count_true = 0
+    count_total = 0
+    for i in range(len(list_inputs)):
+        assert len(list_inputs[i]) == len(list_outputs[i])
+        for j in range(len(list_inputs[i])):
+            count_total += 1
+            count_true += int(list_inputs[i][j] == list_outputs[i][j])
+    return count_true/count_total
 
 def accuracy_score(Y_true, Y_pred):
     """
@@ -25,4 +42,19 @@ def accuracy_score(Y_true, Y_pred):
     # print(total_words)
     # print(correct_words)
     return correct_words/total_words
+
+# Y_pred_tokenized = [["tôi", "đang"], ["ăn"]]  
+# # Y_pred_padded = pad_sequences(Y_pred_tokenized, padding='post', dtype=object)
+# model_filename = "N_gram_model\\kneserney_trigram_administrative_cutoff1.pkl"
+# model = pickle.load(open(model_filename, 'rb'))
+# text = ["Luat Giao thong duoc doi moi", 'Lao Hac bi benh va qua doi']
+# true = ["Luật Giao thông được đổi mới", 'Lão Hạc bị bệnh và qua đời']
+# out = predict(model_filename, text)
+# h = InputHandler()
+# Y_pred_padded = pad_sequences(h.remover(out), padding='post', dtype=object)
+# h1 = InputHandler()
+# Y_true_padded = pad_sequences(h1.remover(true), padding='post', dtype=object)
+# print(out)
+# print(accuracy_score(Y_true_padded, Y_pred_padded))
+
    
