@@ -6,6 +6,8 @@ from PyQt6.QtCore import QSize, Qt, QPointF
 import pandas as pd
 from pathlib import Path
 from bilstm import predict
+from InputHandler import InputHandler
+
 
 def make_predictions(list_inputs, model:str):
 	return predict(list_inputs)
@@ -78,10 +80,10 @@ class AboutDlg(QDialog):
 class MainWindow(QMainWindow):
 	def __init__(self):
 		super(MainWindow, self).__init__()
-		self.setWindowTitle("Spam Filter")
+		self.setWindowTitle("Vietnamese Diacritics Restoration App")
 		self.setFixedSize(1000,800)
 		self.setStyleSheet('background-color: #AEB3BD;')
-		self.model = 'KNN'
+		self.model = 'Transformer'
 
         # ------------------------------ Spam App start ----------------------------------
 		self.list_inputs = []
@@ -179,7 +181,16 @@ class MainWindow(QMainWindow):
 		self.AlgoComboBox.addItem('BiLSTM model')
 		self.AlgoComboBox.addItem('Transformer model')
 		self.AlgoComboBox.currentTextChanged.connect(self.on_model_changed)
-        # ------------------------------ Spam App end ------------------------------------
+
+		self.InputList_scroll_area.verticalScrollBar().valueChanged.connect(
+        self.OutputList_scroll_area.verticalScrollBar().setValue)
+		self.OutputList_scroll_area.verticalScrollBar().valueChanged.connect(
+        self.InputList_scroll_area.verticalScrollBar().setValue)
+		self.InputList_scroll_area.horizontalScrollBar().valueChanged.connect(
+        self.OutputList_scroll_area.horizontalScrollBar().setValue)
+		self.OutputList_scroll_area.horizontalScrollBar().valueChanged.connect(
+        self.InputList_scroll_area.horizontalScrollBar().setValue)
+        # ------------------------------ Diacritics Restoration App end ------------------------------------
 
 	def InputFromFile(self):
 		dialog = QFileDialog(self)
@@ -203,12 +214,28 @@ class MainWindow(QMainWindow):
 	
 	def addTextInput(self, text:str):
 		all_lines = re.sub(r'([\n]+)', "\n", text).split('\n')
+		i = 0
 		for line in all_lines:
 			if line:
-				d = QLabel(line)
+				d = QLabel(str(i+1) + '. ' + line)
+				if i % 2 == 0:
+					d.setStyleSheet("""
+					background-color: #D4D4D4;
+					color: #000000;
+					font-family: Titillium;
+					font-size: 18px;
+					""")
+				else:
+					d.setStyleSheet("""
+					background-color: #FFFFFF;
+					color: #000000;
+					font-family: Titillium;
+					font-size: 18px;
+					""")
 				self.InputList_area_layout.addWidget(d)
 				self.InputList_scroll_area.update()
 				self.list_inputs.append(line)
+				i += 1
 		print(self.list_inputs)
 
 	def OutputExport(self):
@@ -255,21 +282,37 @@ class MainWindow(QMainWindow):
 		self.predicted = False
 
 	def predict(self):
+		self.RemoveOutputList()
 		self.predicted = True
+
+		ih = InputHandler()
+		model_input = ih.remover(self.list_inputs)
+		model_input = [' '.join(inp) for inp in model_input]
 		
 		# This debug program will make random predictions for testing
-		self.list_outputs = make_predictions(self.list_inputs, self.model)
+		self.list_outputs = make_predictions(model_input, self.model)
+		print(self.list_outputs)
+
+		self.list_outputs = ih.converter([out.split(' ') for out in self.list_outputs])
 		# For the real program, you should replace the above line with self.list_outputs = make_predictions(self.list_inputs, self.algorithm) where make_predictions is a function which takes a list of strings and return a list of strings with the same number of elements
 		assert len(self.list_inputs) == len(self.list_outputs)
 		for i in range(len(self.list_outputs)):
 			label = self.list_outputs[i]
-			d = QLabel(f'{str(label)}')
-			d.setStyleSheet("""
-			background-color: #7AFFED;
-			color: #000000;
-			font-family: Titillium;
-			font-size: 18px;
-			""")
+			d = QLabel(f'{i+1}. {str(label)}')
+			if i % 2 == 0:
+				d.setStyleSheet("""
+				background-color: #D4D4D4;
+				color: #000000;
+				font-family: Titillium;
+				font-size: 18px;
+				""")
+			else:
+				d.setStyleSheet("""
+				background-color: #FFFFFF;
+				color: #000000;
+				font-family: Titillium;
+				font-size: 18px;
+				""")
 			self.OutputList_area_layout.addWidget(d)
 			self.OutputList_scroll_area.update()
 

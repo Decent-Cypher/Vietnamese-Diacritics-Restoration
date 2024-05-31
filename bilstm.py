@@ -34,7 +34,12 @@ def predict(input_texts:list):
         user_query_split = user_query_split.lower().split(" ")
         for t in range(len(user_query_split)):
             try:
-                predict_output += str(idx2word[user_query_split[t]][p[i][t]]) + " "
+                if idx2word[user_query_split[t]][p[i][t]] == 'number':
+                    predict_output += '<number> '
+                elif idx2word[user_query_split[t]][p[i][t]] == 'date':
+                    predict_output += '<date> '
+                else:
+                    predict_output += str(idx2word[user_query_split[t]][p[i][t]]) + " "
             except KeyError:
                 predict_output += user_query_split[t] + " "
         output_texts.append(predict_output[:-1])
