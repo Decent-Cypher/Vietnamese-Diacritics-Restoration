@@ -8,3 +8,7 @@ final_data.txt
 draft.py
 kneserney_bigram_full_cutoff1.txt
 100Tests.txt
+N_gram_output/
+N_gram_report/
+100Tests (1).txt
+100Tests (2).txt

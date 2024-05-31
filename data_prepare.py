@@ -261,7 +261,7 @@ def change_syllables(data_filename):
 
 if __name__ == '__main__':
     # data = pickle.load(open('final.pkl', 'rb'))
-    with open("100Tests.txt", "r", encoding='utf-8') as file:
+    with open("100Tests (2).txt", "r", encoding='utf-8') as file:
         data = file.readlines()
     Y = data
     # random.shuffle(Y)
