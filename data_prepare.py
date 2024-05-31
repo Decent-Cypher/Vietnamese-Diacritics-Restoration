@@ -223,39 +223,39 @@ def import_CSV_to_pkl(X_test_csv = 'testset_200\\test_X_200_1.csv', Y_test_csv =
     with open(Y_test_pkl, 'wb+') as f:
         pickle.dump(Y_test, f)
 
-def change_syllables(data_filename):
-    data = pickle.load(open(data_filename, 'rb'))
-    syllable_pairs = [['ỏe', 'oẻ'], ['óe', 'oé'], ['òe', 'oè'], ['õe', 'oẽ'], ['ọe', 'oẹ'],
-                      ['õa', 'oã'], ['óa', 'oá'], ['òa', 'oà'], ['ỏa', 'oả'], ['ọa', 'oạ'],
-                      ['úy', 'uý'], ['ùy', 'uỳ'], ['ủy', 'uỷ'], ['ũy', 'uỹ'], ['ụy', 'uỵ']]
-    count = 0
-    p = InputHandler()
-    tokenized_data = p.remover(data)
-    for j in range(len(tokens)):
-        # try:
-        #     tokens = p.remover(data[j])
-        # except IndexError:
-        #     print('ERROR here')
-        print(data[j])
+# def change_syllables(data_filename):
+#     data = pickle.load(open(data_filename, 'rb'))
+#     syllable_pairs = [['ỏe', 'oẻ'], ['óe', 'oé'], ['òe', 'oè'], ['õe', 'oẽ'], ['ọe', 'oẹ'],
+#                       ['õa', 'oã'], ['óa', 'oá'], ['òa', 'oà'], ['ỏa', 'oả'], ['ọa', 'oạ'],
+#                       ['úy', 'uý'], ['ùy', 'uỳ'], ['ủy', 'uỷ'], ['ũy', 'uỹ'], ['ụy', 'uỵ']]
+#     count = 0
+#     p = InputHandler()
+#     tokenized_data = p.remover(data)
+#     for j in range(len(tokens)):
+#         # try:
+#         #     tokens = p.remover(data[j])
+#         # except IndexError:
+#         #     print('ERROR here')
+#         print(data[j])
 
-        #     break
+#         #     break
         
-        # continue
-        # print(tokens)
-        changed = False
-        for i in range(len(tokens)):
-            for s in syllable_pairs:
-                if tokens[i][-2:] == s[0]:
-                    tokens[i] = re.sub(s[0], s[1], tokens[i])
-                    changed = True
+#         # continue
+#         # print(tokens)
+#         changed = False
+#         for i in range(len(tokens)):
+#             for s in syllable_pairs:
+#                 if tokens[i][-2:] == s[0]:
+#                     tokens[i] = re.sub(s[0], s[1], tokens[i])
+#                     changed = True
         
-        data[j] = p.converter(tokens)
-        if changed:
-            print('-> ' + data[j])
-            count += 1
-        if not changed:
-            print("-> NO")
-        #     print('-> '+data[j])
+#         data[j] = p.converter(tokens)
+#         if changed:
+#             print('-> ' + data[j])
+#             count += 1
+#         if not changed:
+#             print("-> NO")
+#         #     print('-> '+data[j])
 
     
 

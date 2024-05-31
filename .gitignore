@@ -1,9 +1,13 @@
 data_small/
 __pycache__
 env/
+
+Transformer/Model/
+
 .gitignore
+100Tests.txt
+
 requirements.txt
-final_data_txt/
 final_data.txt
 draft.py
 kneserney_bigram_full_cutoff1.txt
