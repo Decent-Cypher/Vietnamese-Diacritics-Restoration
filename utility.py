@@ -26,4 +26,3 @@ def accuracy_score(Y_true, Y_pred):
     # print(correct_words)
     return correct_words/total_words
    
-print(accuracy_score(np.array([['nếu',],]),np.array([['nêu',],])))

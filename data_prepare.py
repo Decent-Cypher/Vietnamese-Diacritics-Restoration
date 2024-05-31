@@ -261,7 +261,7 @@ def import_CSV_to_pkl(X_test_csv = 'testset_200\\test_X_200_1.csv', Y_test_csv =
 
 if __name__ == '__main__':
     # data = pickle.load(open('final.pkl', 'rb'))
-    with open("100Tests (2).txt", "r", encoding='utf-8') as file:
+    with open("6-HanhChinh-20.txt", "r", encoding='utf-8') as file:
         data = file.readlines()
     Y = data
     # random.shuffle(Y)
@@ -273,9 +273,9 @@ if __name__ == '__main__':
     #     pickle.dump(X_train, f)
     # with open('Additional Data\\final_train_Y.pkl', 'wb+') as f:
     #     pickle.dump(y_train, f)
-    with open('test_X_100.pkl', 'wb+') as f:
+    with open('test_category\\test_X_administrative.pkl', 'wb+') as f:
         pickle.dump(X, f)
-    with open('test_Y_100.pkl', 'wb+') as f:
+    with open('test_category\\test_Y_administrative.pkl', 'wb+') as f:
         pickle.dump(Y, f)
     
 
