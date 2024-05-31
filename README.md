@@ -29,6 +29,11 @@ This project implements N-gram models, BiLSTM model, and Transformer model to re
     pip install -r requirements.txt
     ```
 
+4. **Get the transformer weights file**:
+    You should follow this [link](https://drive.google.com/file/d/1bZu-lJ9NzT2XhzxBeT_6koKYlN0cn5e5/view?usp=sharing) to download the necessary weights file for the Transformer Model. After that, put the file "transformer_weights_final.h5" you just downloaded to "Transformer/Model/" directory.
+    Without this file, the code wouldn't run.
+    
+
 ## Usage
 1. Ensure you have completed the installation steps.
 
