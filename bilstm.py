@@ -5,8 +5,8 @@ from keras.preprocessing.sequence import pad_sequences
 import pickle
 import numpy as np
 import re
-from tensorflow.keras import Model, Input
-from tensorflow.keras.layers import LSTM, Embedding, Dense, TimeDistributed, SpatialDropout1D, Bidirectional
+from tensorflow.keras import Model, Input # type: ignore
+from tensorflow.keras.layers import LSTM, Embedding, Dense, TimeDistributed, SpatialDropout1D, Bidirectional # type: ignore
 
 def remove_punctuation(text: str) -> str:
     return re.sub(r'[^\w\s]', '', text)
