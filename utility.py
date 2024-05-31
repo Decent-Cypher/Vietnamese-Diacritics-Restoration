@@ -41,4 +41,19 @@ def accuracy_score(Y_true, Y_pred):
     # print(total_words)
     # print(correct_words)
     return correct_words/total_words
+
+# Y_pred_tokenized = [["tôi", "đang"], ["ăn"]]  
+# # Y_pred_padded = pad_sequences(Y_pred_tokenized, padding='post', dtype=object)
+# model_filename = "N_gram_model\\kneserney_trigram_administrative_cutoff1.pkl"
+# model = pickle.load(open(model_filename, 'rb'))
+# text = ["Luat Giao thong duoc doi moi", 'Lao Hac bi benh va qua doi']
+# true = ["Luật Giao thông được đổi mới", 'Lão Hạc bị bệnh và qua đời']
+# out = predict(model_filename, text)
+# h = InputHandler()
+# Y_pred_padded = pad_sequences(h.remover(out), padding='post', dtype=object)
+# h1 = InputHandler()
+# Y_true_padded = pad_sequences(h1.remover(true), padding='post', dtype=object)
+# print(out)
+# print(accuracy_score(Y_true_padded, Y_pred_padded))
+
    

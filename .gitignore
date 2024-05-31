@@ -7,3 +7,8 @@ Transformer/Model/transformer_weights_final.h5
 Transformer/References/
 
 .gitignore
+N_gram_output/
+N_gram_report/
+100Tests (1).txt
+100Tests (2).txt
+test_category_txt/

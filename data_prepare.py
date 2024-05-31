@@ -263,7 +263,7 @@ if __name__ == '__main__':
     i = InputHandler()
     print(i.remover(["Dự báo đến 7h ngày 1/6, áp thấp nhiệt đới trên vùng bờ biển Trung Quốc tiếp tục di chuyển theo hướng Bắc với tốc độ 15km/h, có khả năng mạnh lên thành bão."]))
     # data = pickle.load(open('final.pkl', 'rb'))
-    with open("Test_100_Y_long.txt", "r", encoding='utf-8') as file:
+    with open("test_category_txt\\4-BaoChi-20.txt", "r", encoding='utf-8') as file:
         data = file.readlines()
     Y = data
     # random.shuffle(Y)
@@ -275,12 +275,10 @@ if __name__ == '__main__':
     #     pickle.dump(X_train, f)
     # with open('Additional Data\\final_train_Y.pkl', 'wb+') as f:
     #     pickle.dump(y_train, f)
-    with open("Test_100_X_long.txt", 'w') as file:
-        file.write(''.join(X))
-    # with open('test_X_100.pkl', 'wb+') as f:
-    #     pickle.dump(X, f)
-    # with open('test_Y_100.pkl', 'wb+') as f:
-    #     pickle.dump(Y, f)
+    with open('test_X_100.pkl', 'wb+') as f:
+        pickle.dump(X, f)
+    with open('test_Y_100.pkl', 'wb+') as f:
+        pickle.dump(Y, f)
     
 
 

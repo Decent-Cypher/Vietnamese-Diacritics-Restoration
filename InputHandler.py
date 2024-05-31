@@ -143,7 +143,7 @@ class InputHandler():
 
 if __name__ == "__main__":
     i = InputHandler()
-    s = "- Doi voi giao duc, can su dong thuan giu398a gia dinh,! nha 48 truong va xa hoi."
+    s = "\"Harry, chúng mình cần phải\""
     out = i.remover([s,])
     print(out)
     print(i.converter(out))
