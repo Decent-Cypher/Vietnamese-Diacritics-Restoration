@@ -1,7 +1,7 @@
 env/
 data_large/
 data_small/
-__pycache__
+__pycache__/
 
 Transformer/Model/transformer_weights_final.h5
 Transformer/References/

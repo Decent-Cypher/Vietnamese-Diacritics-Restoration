@@ -5,12 +5,19 @@ from PyQt6.QtGui import QPalette, QColor, QIcon, QPixmap, QPainter, QPolygonF
 from PyQt6.QtCore import QSize, Qt, QPointF
 import pandas as pd
 from pathlib import Path
-from bilstm import predict
 from InputHandler import InputHandler
+import bilstm
+import n_gram
+import transformer
 
 
 def make_predictions(list_inputs, model:str):
-	return predict(list_inputs)
+	if model == 'N-gram model':
+		return n_gram.predict('./N_gram_model/kneserney_ngram.pkl', list_inputs)
+	elif model == 'BiLSTM model':
+		return bilstm.predict(list_inputs)
+	else:
+		return transformer.get_prediction(list_inputs)
 
 
 def alert(message:str, parent=None):
@@ -73,7 +80,7 @@ class AboutDlg(QDialog):
 		self.setWindowTitle("Additional Information")
 		self.setFixedSize(1100,600)
 		manual = QLabel(self)
-		about_text = f'This is the Spam Filter App, created by group 11 as the product of the Introduction to Artificial Intelligence class'
+		about_text = f'This is the Vietnamese Diacritics Restoration App, created by group 26 as the product of the Machine Learning class'
 		manual.setText(about_text)
 		manual.show()
 
@@ -83,7 +90,7 @@ class MainWindow(QMainWindow):
 		self.setWindowTitle("Vietnamese Diacritics Restoration App")
 		self.setFixedSize(1000,800)
 		self.setStyleSheet('background-color: #AEB3BD;')
-		self.model = 'Transformer'
+		self.model = 'N-gram model'
 
         # ------------------------------ Spam App start ----------------------------------
 		self.list_inputs = []
