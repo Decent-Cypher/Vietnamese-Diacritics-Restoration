@@ -38,12 +38,19 @@ This project implements N-gram models, BiLSTM model, and Transformer model to re
     ```
     
 3. On the left side of the newly created window, you will see a text box which will contain the messages you want to predict. In order to predict new text inputs, you can use the **Add text** and **Read text from file** buttons, after that, please press the **PREDICT** button in the middle. The output will appear on the right side of the app window. You can use our prepared text files contained in the demos folder. The model used in making predictions can also be switched using the **Choose a model** combobox.
+
+
        * You should see a window like this pop up when first running the application:
-![App_User_Interface](pictures/App_User_Interface.png)
+![App_User_Interface](pictures/Main_User_Interface.png)
+
+
+       * After you have chosen a file or added some sentences yourself and pushed the PREDICT button, a result like this will be shown:
+![App_User_Interface2](pictures/User_Interface_Predictions.png)
+
 
 	   * You can choose one from 3 models listed in the combobox for making predictions:
-![App_User_Interface_Algorithms](pictures/App_User_Interface_Models.png)
+![App_User_Interface_Models](pictures/User_Interface_Choose_Model.png)
 
-	   * After you have chosen a file or added some messages yourself and pushed the PREDICT button, a result like this will be shown:
-![App_User_Interface2](pictures/App_User_Interface2.png)
+
+	   
 
