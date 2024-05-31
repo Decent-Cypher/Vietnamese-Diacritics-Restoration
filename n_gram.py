@@ -14,6 +14,7 @@ import numpy as np
 from keras.preprocessing.sequence import pad_sequences
 from InputHandler import InputHandler
 from data_prepare import gen_accents_word
+import os
 
 def tokenize(sent: str):
     """
@@ -45,17 +46,19 @@ def preprocess_corpus(train_filename, min_frequency = 4):
     return corpus
 
 def preprocess_train(train_filename='Y_train_new.pkl', n=3, unk_cutoff=4):
-    # Y_train = pickle.load(open(train_filename, "rb"))
-    with open(train_filename, 'r', encoding='utf-8') as f:
-        Y_train = f.readlines()
+    Y_train = pickle.load(open(train_filename, "rb"))
+    # with open(train_filename, 'r', encoding='utf-8') as f:
+    #     Y_train = f.readlines()
     p = InputHandler()
     corpus = p.remover(Y_train)
     train_data, padded_sents = padded_everygram_pipeline(n, corpus)
+    # for p in padded_sents:
+    #     print(p)
     vocab = Vocabulary(padded_sents, unk_cutoff=unk_cutoff)
     print("Finished preprocessing training data.")
     return train_data, padded_sents, vocab
 
-def save_model(train_data, padded_sents, model, n = 3, model_filename = 'kneserney_ngram.pkl'):
+def save_model(train_data, padded_sents, model, model_filename = 'kneserney_ngram.pkl'):
     # Create a corpus of words from training set
     # corpus = preprocess_corpus(train_filename)
 
@@ -121,36 +124,87 @@ def beam_search(tokens, model, b=3):
     model: A language model object used to score the likelihood of word sequences. 
     b: Beam width, i.e., the number of sequences to keep at each step. Default value is 3.
     """
+    n = model.order
+    # print(n)
     candidates = []
-    l = len(tokens)
-    for idx in range(l+1):
-        d = [] # hold the probability of every combination of words
-        if idx == 0:
-            accent_words = gen_accents_word(tokens[idx])
-            for word in accent_words:
-                log_score = model.logscore(word, ['<s>', '<s>'])
-                d.append([[word], log_score])
-                # print(f"{word} {log_score}")
-        elif idx == l:
-            for candidate in candidates:
-                log_score = model.logscore('</s>', [candidate[0][idx-2], candidate[0][idx-1]])
-                d.append([candidate[0], log_score + candidate[1]])
-                # print(f'Probability of "EOS" given {candidate[0]}: {log_score}')
-                # print(f'Probability of "{candidate[0]}: {log_score + candidate[1]}')
-        else:
-            accent_words = gen_accents_word(tokens[idx])
-            for candidate in candidates:
+    if n == 3:
+        l = len(tokens)
+        for idx in range(l+1):
+            d = [] # hold the probability of every combination of words
+            if idx == 0:
+                accent_words = gen_accents_word(tokens[idx])
                 for word in accent_words:
-                    if idx == 1:
-                        log_score = model.logscore(word, ['<s>', candidate[0][idx-1]])
-                    else:
-                        log_score = model.logscore(word, [candidate[0][idx-2], candidate[0][idx-1]])
-                    # print(f'Probability of "{word}" given {candidate[0]}: {log_score}')
-                    # print(f'Probability of "{candidate[0]+[word]}: {log_score + candidate[1]}')
-                    d.append([candidate[0]+[word], log_score + candidate[1]])
-        # print(f"{idx}. \n{d}")
-        candidates = sorted(d, key=lambda x: x[1], reverse=True)[:b]
+                    log_score = model.logscore(word, ['<s>', '<s>'])
+                    d.append([[word], log_score])
+                    # print(f"{word} {log_score}")
+            elif idx == l:
+                for candidate in candidates:
+                    log_score = model.logscore('</s>', [candidate[0][idx-2], candidate[0][idx-1]])
+                    d.append([candidate[0], log_score + candidate[1]])
+                    # print(f'Probability of "EOS" given {candidate[0]}: {log_score}')
+                    # print(f'Probability of "{candidate[0]}: {log_score + candidate[1]}')
+            else:
+                accent_words = gen_accents_word(tokens[idx])
+                for candidate in candidates:
+                    for word in accent_words:
+                        if idx == 1:
+                            log_score = model.logscore(word, ['<s>', candidate[0][idx-1]])
+                        else:
+                            log_score = model.logscore(word, [candidate[0][idx-2], candidate[0][idx-1]])
+                        # print(f'Probability of "{word}" given {candidate[0]}: {log_score}')
+                        # print(f'Probability of "{candidate[0]+[word]}: {log_score + candidate[1]}')
+                        d.append([candidate[0]+[word], log_score + candidate[1]])
+            # print(f"{idx}. \n{d}")
+            candidates = sorted(d, key=lambda x: x[1], reverse=True)[:b]
         # print(candidates)
+    elif n == 2:
+        l = len(tokens)
+        for idx in range(l+1):
+            d = [] # hold the probability of every combination of words
+            if idx == 0:
+                accent_words = gen_accents_word(tokens[idx])
+                for word in accent_words:
+                    log_score = model.logscore(word, ['<s>'])
+                    d.append([[word], log_score])
+                    # print(f"{word} {log_score}")
+            elif idx == l:
+                for candidate in candidates:
+                    log_score = model.logscore('</s>', [candidate[0][idx-1]])
+                    d.append([candidate[0], log_score + candidate[1]])
+                    # print(f'Probability of "EOS" given {candidate[0]}: {log_score}')
+                    # print(f'Probability of "{candidate[0]}: {log_score + candidate[1]}')
+            else:
+                accent_words = gen_accents_word(tokens[idx])
+                for candidate in candidates:
+                    for word in accent_words:
+                        log_score = model.logscore(word, [candidate[0][idx-1]])
+                        # print(f'Probability of "{word}" given {candidate[0]}: {log_score}')
+                        # print(f'Probability of "{candidate[0]+[word]}: {log_score + candidate[1]}')
+                        d.append([candidate[0]+[word], log_score + candidate[1]])
+            # print(f"{idx}. \n{d}")
+            candidates = sorted(d, key=lambda x: x[1], reverse=True)[:b]
+            # print(candidates)
+            # print()
+    elif n == 1:
+        l = len(tokens)
+        for idx in range(l):
+            d = [] # hold the probability of every combination of words
+            accent_words = gen_accents_word(tokens[idx])
+            if idx == 0:
+                for word in accent_words:
+                    log_score = model.logscore(word)
+                    d.append([[word], log_score])
+                    # print(f"{word} {log_score}")
+            else:
+                for candidate in candidates:
+                    for word in accent_words:
+                        log_score = model.logscore(word)
+                        # print(f'Probability of "{word}" given {candidate[0]}: {log_score}')
+                        # print(f'Probability of "{candidate[0]+[word]}: {log_score + candidate[1]}')
+                        d.append([candidate[0]+[word], log_score + candidate[1]])
+            # print(f"{idx}. \n{d}")
+            candidates = sorted(d, key=lambda x: x[1], reverse=True)[:b]
+            # print(candidates)
     return candidates
 
 
@@ -165,20 +219,22 @@ def predict(model_filename, texts: list[str]):
         output.append(result[0][0])
     return p.converter(output)
 
-def predict_testset(model_filename = "kneserney_ngram.pkl", X_test_filename = 'testset_200\\test_X_200.pkl', Y_pred_csv = 'pred_Y_200.csv'):
+def predict_testset(model_filename = "kneserney_ngram.pkl", X_test_filename = 'test_X_100.pkl', Y_pred_txt = 'pred_Y_100.txt'):
     # detokenize = TreebankWordDetokenizer().detokenize
-    model = pickle.load(open(model_filename, "rb"))
     X_test = pickle.load(open(X_test_filename, 'rb'))
-    for i in tqdm(range(len(X_test))):
-        with open(Y_pred_csv, mode='w+', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            sentence = X_test[i]
-            input_tokens = tokenize(sentence)
-            print(input_tokens)
-            result = beam_search(input_tokens, model)
-            sentence_pred = ' '.join(result[0][0])
-            print("After accents insertion: " + sentence_pred)
-            writer.writerow([sentence_pred])
+    output = []
+    p = InputHandler()
+    tokenized_texts = p.remover(X_test)
+    model = pickle.load(open(model_filename, "rb"))
+    for sentence in tqdm(tokenized_texts):
+        result = beam_search(sentence, model)
+        # print("After accents insertion: " + p.converter(result[0][0]))
+        output.append(result[0][0])
+        print(result[0][0])
+    Y_pred = p.converter(output)
+    with open(Y_pred_txt, mode='w', encoding='utf-8') as f:
+        for s in Y_pred:
+            f.write(s + "\n")
 
 def print_report(Y_pred_csv = 'pred_Y_200.csv', Y_test_pkl = 'testset_200\\test_Y_200.pkl'):
     Y_test_sequences = pickle.load(open(Y_test_pkl, 'rb'))
@@ -194,19 +250,20 @@ def print_report(Y_pred_csv = 'pred_Y_200.csv', Y_test_pkl = 'testset_200\\test_
             Y_pred.append(list(seq_pred.split()))
     Y_pred_arr = np.array(pad_sequences(Y_pred, padding='post', dtype=object))
 
-    print('Testing Set Accuracy:', accuracy_score(Y_test_arr, Y_pred_arr))    
+    print('Testing Set Accuracy:', accuracy_score(Y_test_arr, Y_pred_arr))   
     
 if __name__ == "__main__":
-    train_filename = 'Final_Political.txt'
-    n = 3
-    train_data, padded_sents, vocab = preprocess_train(train_filename=train_filename, unk_cutoff=1)
-    model = KneserNeyInterpolated(order=n, vocabulary=vocab)  # discount = 0.1
-    # model = Laplace(order=n, vocabulary=vocab)
-    # model = StupidBackoff(order=n, vocabulary=vocab) # alpha = 0.4
-    model_filename = 'N_gram_model\\kneserney_trigram_political_cutoff1.pkl'
-    save_model(train_data=train_data, padded_sents=padded_sents, model = model, n = n, model_filename = model_filename)
-    sentence = 'Doi voi giao duc, can su dong thuan giua gia dinh, nha truong va xa hoi.'
-    print(predict(model_filename=model_filename, texts=[sentence,]))
+    path = "N_gram_model\\"
+    l = ['kneserney_trigram_full_cutoff1.pkl', 'kneserney_trigram_full_cutoff2.pkl', 'kneserney_trigram_full_cutoff3.pkl', 'laplace_trigram_full_cutoff1.pkl', 'stupidbackoff_trigram_full_cutoff1.pkl', 'laplace_bigram_full_cutoff1.pkl', 'laplace_unigram_full_cutoff1.pkl', 'kneserney_trigram_administrative_cutoff1.pkl', 'kneserney_trigram_artistic_cutoff1.pkl', 'kneserney_trigram_casual_cutoff1.pkl', 'kneserney_trigram_political_cutoff1.pkl', 'kneserney_trigram_press_cutoff1.pkl', 'kneserney_trigram_scientific_cutoff1.pkl']
+    X_test_filename = 'test_X_100.pkl'
+    for model in l:
+        print(model)
+        predict_testset(model_filename=path+model, X_test_filename=X_test_filename, Y_pred_txt=model[:-3]+'txt')
+
+    
+
+
+
 
 
 

@@ -8,3 +8,7 @@ Transformer/Model/
 100Tests.txt
 
 requirements.txt
+final_data.txt
+draft.py
+kneserney_bigram_full_cutoff1.txt
+100Tests.txt
