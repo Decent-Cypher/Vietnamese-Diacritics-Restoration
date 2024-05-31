@@ -185,7 +185,7 @@ def predict(model_filename, texts: list[str], b=3):
     output = []
     p = InputHandler()
     tokenized_texts = p.remover(texts)
-    model = pickle.load(open("N_gram_model\\"+model_filename, "rb"))
+    model = pickle.load(open(model_filename, "rb"))
     for sentence in tokenized_texts:
         result = beam_search(sentence, model, b)
         # print("After accents insertion: " + p.converter(result[0][0]))
@@ -198,19 +198,19 @@ def predict_testset(model_filename = "kneserney_ngram.pkl", X_test_filename = 't
     output = []
     p = InputHandler()
     tokenized_texts = p.remover(X_test)
-    model = pickle.load(open("N_gram_model\\"+model_filename, "rb"))
+    model = pickle.load(open(model_filename, "rb"))
     for sentence in tqdm(tokenized_texts):
         result = beam_search(sentence, model, b)
         # print("After accents insertion: " + p.converter(result[0][0]))
         output.append(result[0][0])
         print(result[0][0])
     Y_pred = p.converter(output)
-    with open('N_gram_output\\'+Y_pred_txt, mode='w', encoding='utf-8') as f:
+    with open(Y_pred_txt, mode='w', encoding='utf-8') as f:
         for s in Y_pred:
             f.write(s + "\n")
 
 def write_report(model_filename, Y_pred_filename = 'pred_Y_200.txt', Y_test_filename = 'testset_200\\test_Y_200.pkl'):
-  with open('N_gram_output\\'+Y_pred_filename, 'r', encoding='utf-8') as f:
+  with open(Y_pred_filename, 'r', encoding='utf-8') as f:
     Y_pred = f.readlines()
   h = InputHandler()
   Y_pred_tokenized = h.remover(Y_pred)
@@ -240,7 +240,7 @@ def write_report(model_filename, Y_pred_filename = 'pred_Y_200.txt', Y_test_file
 #   print(entropy)
 #   print(perplexity)
 
-  with open('N_gram_report\\'+Y_pred_filename[:-4]+'_report'+'.txt', 'w', encoding = 'utf-8') as f:
+  with open(Y_pred_filename[:-4]+'_report'+'.txt', 'w', encoding = 'utf-8') as f:
     f.write(f'{Y_pred_filename[:-4]} report:\n')
     f.write(f'Accuracy: {accuracy}\n')
     # f.write(f'Entropy: {entropy}\n')
@@ -252,13 +252,13 @@ if __name__ == "__main__":
     # n = 1
     # train_data, padded_sents, vocab = preprocess_train('Additional Data\\final_train_Y.pkl', n=n, unk_cutoff=1)
     # model = StupidBackoff(order=n, vocabulary=vocab)
-    model_filename = 'kneserney_trigram_press_cutoff1.pkl'
+    model_filename = 'kneserney_trigram_full_cutoff2_b3.pkl'
     # save_model(train_data, padded_sents, model, path+model_filename)
-    X_test_filename = 'test_category\\test_X_press.pkl'
+    X_test_filename = 'test_100\test_X_100.pkl'
     b = 3
-    Y_test_filename = 'test_category\\test_Y_press.pkl'
-    Y_pred_filename = f'{model_filename[:-4]}_b{b}.txt'
-    predict_testset(model_filename=model_filename, X_test_filename=X_test_filename, Y_pred_txt=Y_pred_filename, b=b)
+    Y_test_filename = 'test_100\\test_Y_100.pkl'
+    Y_pred_filename = f'{model_filename[:-4]}.txt'
+    # predict_testset(model_filename=model_filename, X_test_filename=X_test_filename, Y_pred_txt=Y_pred_filename, b=b)
     write_report(model_filename=model_filename, Y_pred_filename=Y_pred_filename, Y_test_filename=Y_test_filename)
     # model_filename2 = 'laplace_trigram_full_cutoff1.pkl'
     # model1 = pickle.load(open(path+model_filename,'rb'))

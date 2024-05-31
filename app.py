@@ -180,7 +180,7 @@ class MainWindow(QMainWindow):
 		self.PredictButton.show()
 		self.PredictButton.clicked.connect(self.predict)
 
-		self.AlgoLabel = QLabel("Choose an model", self)
+		self.AlgoLabel = QLabel("Choose a model", self)
 		self.AlgoLabel.setGeometry(415, 170, 180, 50)
 		self.AlgoComboBox = QComboBox(self)
 		self.AlgoComboBox.setGeometry(410, 220, 180, 50)

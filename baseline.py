@@ -47,9 +47,6 @@ for key in word2freq:
     s = sum([item[1] for item in word2freq[key].items()])
     word2freq[key] = {item[0]:(item[1]/s) for item in word2freq[key].items()}
 
-print(word2freq['anh'])
-import sys
-sys.exit(0)
 
 def predict(texts:list):
     texts = [remove_punctuation(txt) for txt in texts]

@@ -141,26 +141,26 @@ class Encoder(tf.keras.layers.Layer):
 
 # Step 1: Load The model
 # load json and create model
-json_file = open('Transformer/Model/transformer_final.json', 'r')
+json_file = open('Transformer\\Model\\transformer_final.json', 'r')
 model_json = json_file.read()
 json_file.close()
 
 model = keras.models.model_from_json(model_json)
 # load weights into new model
-model.load_weights("Transformer/Model/transformer_weights_final.h5")
+model.load_weights("Transformer\\Model\\transformer_weights_final.h5")
 print("Loaded model from disk")
 
 # Step 2: Convert Text To Sequences
-filename = 'Transformer/Dictionary/tokenizer_final.pkl'
+filename = 'Transformer\\Dictionary\\tokenizer_final.pkl'
 tokenizer = pickle.load(open(filename, 'rb'))
 # print(tokenizer.texts_to_sequences(["Hom nay troi dep, troi trong xanh bao la"]))
 
 # Step 3: Load word-index json file
-with open('Transformer/Dictionary/word2idx_final.json', 'r') as file:
+with open('Transformer\\Dictionary\\word2idx_final.json', 'r') as file:
     # Load JSON data into a dictionary
     word2idx = json.load(file)
 
-with open('Transformer/Dictionary/idx2word_final.json', 'r') as file:
+with open('Transformer\\Dictionary\\idx2word_final.json', 'r') as file:
     idx2word = json.load(file)
 
 # Step 4: Create a function convert sentences to sequences

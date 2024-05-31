@@ -17,11 +17,11 @@ def convert_text_to_sequences(text):
     return text_sequences
 
 
-with open('./BiLSTM/Tokenizer/tokenizer_input.pkl', 'rb') as handle:
+with open('.\\BiLSTM\\Tokenizer\\tokenizer_input.pkl', 'rb') as handle:
     tokenizer_input = pickle.load(handle)
-with open('./BiLSTM/Tokenizer/tokenizer_target.pkl', 'rb') as handle:
+with open('.\\BiLSTM\\Tokenizer\\tokenizer_target.pkl', 'rb') as handle:
     tokenizer_target = pickle.load(handle)
-idx2word = pickle.load(open('./BiLSTM/Dictionary/idx2word.pkl', 'rb'))
+idx2word = pickle.load(open('.\\BiLSTM\\Dictionary\\idx2word.pkl', 'rb'))
 
 
 
@@ -41,7 +41,7 @@ model = Bidirectional(LSTM(units=50, return_sequences=True, recurrent_dropout=0.
 out = TimeDistributed(Dense(30, activation="softmax"))(model)
 model = Model(input, out)
 
-model.load_weights('./BiLSTM/BiLSTM_model_final.h5')
+model.load_weights('.\\BiLSTM\\BiLSTM_model_final.h5')
 model.summary()
 
 def predict(input_texts:list):
