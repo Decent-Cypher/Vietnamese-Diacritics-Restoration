@@ -13,7 +13,7 @@ import transformer
 
 def make_predictions(list_inputs, model:str):
 	if model == 'N-gram model':
-		return n_gram.predict('./N_gram_model/kneserney_ngram.pkl', list_inputs)
+		return n_gram.predict('./N_gram_model/kneserney_trigram_full_cutoff1.pkl', list_inputs)
 	elif model == 'BiLSTM model':
 		return bilstm.predict(list_inputs)
 	else:
