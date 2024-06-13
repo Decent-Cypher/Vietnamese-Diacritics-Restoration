@@ -96,6 +96,7 @@ class ClickableLabel(QLabel):
 
 	def get_current_color_hex(self):
 		style_sheet = self.styleSheet()
+		print(style_sheet)
         
 		# Use regular expression to find the background-color attribute
 		match = re.search(r'background-color:\s*([^;]+);', style_sheet)
@@ -107,9 +108,9 @@ class ClickableLabel(QLabel):
 		if event.button() == Qt.MouseButton.LeftButton:
 			if self.get_current_color_hex() != self.color_clicked:
 				self.default_color = self.get_current_color_hex()
-				self.setStyleSheet(f'background-color: {self.color_clicked}; color: #000000;')
+				self.setStyleSheet(f'background-color: {self.color_clicked}; color: #000000; font-family: Titillium; font-size: 18px;')
 			else:
-				self.setStyleSheet(f'background-color: {self.default_color}; color: #000000;')
+				self.setStyleSheet(f'background-color: {self.default_color}; color: #000000; font-family: Titillium; font-size: 18px;')
 		super().mousePressEvent(event)
 
 class MainWindow(QMainWindow):
