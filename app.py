@@ -84,6 +84,34 @@ class AboutDlg(QDialog):
 		manual.setText(about_text)
 		manual.show()
 
+class ClickableLabel(QLabel):
+	color_clicked = '#00FF00'
+	def __init__(self):
+		super().__init__()
+		self.default_color = ''
+
+	def __init__(self, text):
+		super().__init__(text)
+		self.default_color = ''
+
+	def get_current_color_hex(self):
+		style_sheet = self.styleSheet()
+        
+		# Use regular expression to find the background-color attribute
+		match = re.search(r'background-color:\s*([^;]+);', style_sheet)
+		if match:
+			return match.group(1).strip()
+		return None
+
+	def mousePressEvent(self, event):
+		if event.button() == Qt.MouseButton.LeftButton:
+			if self.get_current_color_hex() != self.color_clicked:
+				self.default_color = self.get_current_color_hex()
+				self.setStyleSheet(f'background-color: {self.color_clicked}; color: #000000;')
+			else:
+				self.setStyleSheet(f'background-color: {self.default_color}; color: #000000;')
+		super().mousePressEvent(event)
+
 class MainWindow(QMainWindow):
 	def __init__(self):
 		super(MainWindow, self).__init__()
@@ -224,7 +252,7 @@ class MainWindow(QMainWindow):
 		i = 0
 		for line in all_lines:
 			if line:
-				d = QLabel(str(i+1) + '. ' + line)
+				d = ClickableLabel(str(i+1) + '. ' + line)
 				if i % 2 == 0:
 					d.setStyleSheet("""
 					background-color: #D4D4D4;
@@ -308,7 +336,7 @@ class MainWindow(QMainWindow):
 		assert len(self.list_inputs) == len(self.list_outputs)
 		for i in range(len(self.list_outputs)):
 			label = self.list_outputs[i]
-			d = QLabel(f'{i+1}. {str(label)}')
+			d = ClickableLabel(f'{i+1}. {str(label)}')
 			if i % 2 == 0:
 				d.setStyleSheet("""
 				background-color: #D4D4D4;
